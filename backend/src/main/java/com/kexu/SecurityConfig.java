@@ -1,0 +1,7 @@
+package com.kexu;
+import org.springframework.context.annotation.*;import org.springframework.security.config.annotation.web.builders.HttpSecurity;import org.springframework.security.web.SecurityFilterChain;import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;import org.springframework.security.crypto.password.PasswordEncoder;import org.springframework.boot.CommandLineRunner;import org.springframework.beans.factory.annotation.Value;import org.springframework.http.HttpMethod;
+@Configuration public class SecurityConfig {
+@Bean PasswordEncoder encoder(){return new BCryptPasswordEncoder();}
+@Bean SecurityFilterChain security(HttpSecurity http) throws Exception { return http.csrf(c->c.disable()).authorizeHttpRequests(a->a.requestMatchers(HttpMethod.POST,"/api/auth/login","/api/auth/register").permitAll().requestMatchers("/api/admin/**").hasRole("ADMIN").anyRequest().authenticated()).exceptionHandling(e->e.authenticationEntryPoint((r,s,x)->s.sendError(401)).accessDeniedHandler((r,s,x)->s.sendError(403))).build(); }
+@Bean CommandLineRunner admin(Accounts accounts,PasswordEncoder encoder,@Value("${app.admin-user}") String user,@Value("${app.admin-password}") String pass){return args->{if(!user.isBlank()&&!pass.isBlank()&&accounts.findByUsername(user).isEmpty()){if(pass.length()<10) throw new IllegalStateException("ADMIN_PASSWORD must contain at least 10 characters");Account a=new Account();a.username=user;a.password=encoder.encode(pass);a.role="ADMIN";accounts.save(a);}};}
+}

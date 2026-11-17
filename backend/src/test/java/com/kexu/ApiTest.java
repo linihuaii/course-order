@@ -1,0 +1,14 @@
+package com.kexu;
+import org.junit.jupiter.api.Test;import org.springframework.beans.factory.annotation.Autowired;import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;import org.springframework.boot.test.context.SpringBootTest;import org.springframework.test.web.servlet.MockMvc;import org.springframework.mock.web.MockHttpSession;import org.springframework.http.MediaType;import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+@SpringBootTest(properties={"spring.datasource.url=jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1","spring.datasource.driver-class-name=org.h2.Driver","spring.datasource.username=sa","spring.datasource.password=","spring.jpa.hibernate.ddl-auto=create-drop"}) @AutoConfigureMockMvc class ApiTest {
+@Autowired MockMvc mvc;
+@Test void usersCannotAccessEachOthersCourses() throws Exception {
+for(String n:new String[]{"alice","bobby"}) mvc.perform(post("/api/auth/register").contentType(MediaType.APPLICATION_JSON).content("{\"username\":\""+n+"\",\"password\":\"password123\"}")).andExpect(status().isOk());
+MockHttpSession alice=(MockHttpSession)mvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON).content("{\"username\":\"alice\",\"password\":\"password123\"}")).andExpect(status().isOk()).andReturn().getRequest().getSession(false);
+mvc.perform(post("/api/courses").session(alice).contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"Math\",\"weekday\":1,\"startPeriod\":1,\"endPeriod\":2,\"startWeek\":1,\"endWeek\":16}")).andExpect(status().isOk());
+MockHttpSession bob=(MockHttpSession)mvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON).content("{\"username\":\"bobby\",\"password\":\"password123\"}")).andExpect(status().isOk()).andReturn().getRequest().getSession(false);
+mvc.perform(post("/api/ai/chat").session(alice).contentType(MediaType.APPLICATION_JSON).content("{\"message\":\"hi\",\"url\":\"https://localhost/chat\",\"key\":\"secret\",\"model\":\"model\"}")).andExpect(status().isBadRequest());
+mvc.perform(post("/api/ai/chat").session(alice).contentType(MediaType.APPLICATION_JSON).content("{\"message\":\"hi\",\"url\":\"https://api.openai.com/v1/chat/completions\",\"key\":\"secret\",\"model\":\"model\",\"temperature\":3}")).andExpect(status().isBadRequest());
+mvc.perform(post("/api/ai/chat").session(alice).contentType(MediaType.APPLICATION_JSON).content("{\"message\":\"hi\",\"url\":\"https://api.openai.com/v1/chat/completions\"}")).andExpect(status().isBadRequest());
+mvc.perform(get("/api/courses").session(bob)).andExpect(status().isOk()).andExpect(content().json("[]"));mvc.perform(delete("/api/courses/1").session(bob)).andExpect(status().isNotFound());mvc.perform(get("/api/admin/users").session(bob)).andExpect(status().isForbidden());mvc.perform(get("/api/courses")).andExpect(status().isUnauthorized());
+}}
