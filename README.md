@@ -4,7 +4,7 @@
 
 ## 快速开始
 
-准备 Java 17、Maven、Node.js 20+ 和 MySQL 8。创建数据库和独立用户后，在 `backend` 设置环境变量 `DB_URL`、`DB_USER`、`DB_PASSWORD`，执行 `mvn spring-boot:run`。在 `frontend` 执行 `npm install` 和 `npm run dev`。开发服务器通过 Vite 代理 `/api` 至 8080 端口。详细步骤及腾讯云部署见 [部署指南](部署指南.md)。
+准备 Java 17、Maven、Node.js 20+ 和 MySQL 8。创建数据库和独立用户后，在 `backend` 设置环境变量 `DB_URL`、`DB_USER`、`DB_PASSWORD`，执行 `mvn spring-boot:run`。在 `frontend` 执行 `npm install` 和 `npm run dev`。开发服务器通过 Vite 代理 `/api` 至 8080 端口。
 
 ## 导入
 
