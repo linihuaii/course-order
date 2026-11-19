@@ -14,3 +14,10 @@
 .today-item small,.today-item span{font-size:13px}
 @media(min-width:1100px){.workspace{max-width:1600px;padding-inline:4%}}
 .day-column .lesson{position:absolute;min-height:0;overflow:hidden;z-index:1;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;overflow-wrap:anywhere}.ai-heading{display:flex;align-items:start;justify-content:space-between;gap:20px}.settings-button{border:1px solid #dce5d9;background:#f8f9f3;color:#526d5e;padding:12px 16px;white-space:nowrap}.modal textarea{resize:vertical;min-height:80px}
+.rose{background:#f2d5df}.amber{background:#f5e2ad}.teal{background:#c5e6dd}.sky{background:#d0e6fa}.citron{background:#e7edbc}.sand{background:#efdfcc}
+.import-color{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.import-color select{margin:0;padding:8px;background:#f8f9f3}
+.period time{display:block;margin-top:3px;font-size:11px;font-variant-numeric:tabular-nums}
+.time-row{display:grid;grid-template-columns:auto 1fr 1fr auto;gap:10px;align-items:center}
+.time-row input{margin:4px 0 10px;padding:6px;min-width:0}
+@media(max-width:450px){.time-row{grid-template-columns:1fr 1fr}.time-row b{grid-column:1/-1}.time-row button{grid-column:1/-1;justify-self:start}}
